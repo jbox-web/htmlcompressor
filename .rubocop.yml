@@ -1,15 +1,14 @@
 ---
 plugins:
-  - rubocop-minitest
   - rubocop-performance
   - rubocop-rake
+  - rubocop-rspec
 
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.2
   Exclude:
     - bin/*
-    - test/**/*
 
 Gemspec/RequireMFA:
   Enabled: false
@@ -60,4 +59,7 @@ Layout/LineLength:
   Enabled: false
 
 Metrics/MethodLength:
+  Enabled: false
+
+RSpec/ExampleLength:
   Enabled: false

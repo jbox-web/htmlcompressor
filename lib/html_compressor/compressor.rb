@@ -152,6 +152,37 @@ module HtmlCompressor
       detect_external_compressors
     end
 
+    def compress(html)
+      if !@options[:enabled] || html.nil? || (html.length == 0)
+        return html
+      end
+
+      # preserved block containers
+      condCommentBlocks = []
+      preBlocks = []
+      taBlocks = []
+      scriptBlocks = []
+      styleBlocks = []
+      eventBlocks = []
+      skipBlocks = []
+      lineBreakBlocks = []
+      userBlocks = []
+
+      # preserve blocks
+      html = preserve_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
+
+      # process pure html
+      html = process_html(html)
+
+      # process preserved blocks
+      process_preserved_blocks(preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
+
+      # put preserved blocks back
+      return_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
+    end
+
+    private
+
     def detect_external_compressors
       @javascript_compressors = {}
       @css_compressors = {}
@@ -183,37 +214,6 @@ module HtmlCompressor
 
       @css_compressors[compressor_name].new CSS_COMPRESSORS_OPTIONS[compressor_name]
     end
-
-    def compress(html)
-      if !@options[:enabled] || html.nil? || (html.length == 0)
-        return html
-      end
-
-      # preserved block containers
-      condCommentBlocks = []
-      preBlocks = []
-      taBlocks = []
-      scriptBlocks = []
-      styleBlocks = []
-      eventBlocks = []
-      skipBlocks = []
-      lineBreakBlocks = []
-      userBlocks = []
-
-      # preserve blocks
-      html = preserve_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
-
-      # process pure html
-      html = process_html(html)
-
-      # process preserved blocks
-      process_preserved_blocks(preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
-
-      # put preserved blocks back
-      return_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
-    end
-
-    private
 
     def preserve_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/ParameterLists
       # preserve user blocks

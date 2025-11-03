@@ -21,7 +21,7 @@ module HtmlCompressor
       remove_https_protocol: false,
       preserve_line_breaks: false,
       simple_boolean_attributes: true,
-    }
+    }.freeze
 
     def initialize(app, options = {})
       @app = app
@@ -31,10 +31,10 @@ module HtmlCompressor
       @compressor = HtmlCompressor::Compressor.new(options)
     end
 
-    def call(env) # rubocop:disable Metrics/MethodLength
+    def call(env)
       status, headers, body = @app.call(env)
 
-      if headers.key? 'Content-Type' and headers['Content-Type'] =~ /html/
+      if headers.key?('Content-Type') && headers['Content-Type'] =~ /html/
         content = ''
 
         body.each do |part|

@@ -63,3 +63,6 @@ Metrics/MethodLength:
 
 RSpec/ExampleLength:
   Enabled: false
+
+Performance/StringReplacement:
+  Enabled: false

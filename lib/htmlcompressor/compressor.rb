@@ -26,7 +26,7 @@ module HtmlCompressor
     # Predefined list of tags that are block-level by default, excluding <code>&lt;div></code> and <code>&lt;li></code> tags.
     # Table tags are also included.
     # Could be passed to {@link #setRemoveSurroundingSpaces(String) setRemoveSurroundingSpaces} method.
-    BLOCK_TAGS_MAX = BLOCK_TAGS_MIN + ',h1,h2,h3,h4,h5,h6,blockquote,center,dl,fieldset,form,frame,frameset,hr,noframes,ol,table,tbody,tr,td,th,tfoot,thead,ul'
+    BLOCK_TAGS_MAX = "#{BLOCK_TAGS_MIN},h1,h2,h3,h4,h5,h6,blockquote,center,dl,fieldset,form,frame,frameset,hr,noframes,ol,table,tbody,tr,td,th,tfoot,thead,ul".freeze
 
     # Could be passed to {@link #setRemoveSurroundingSpaces(String) setRemoveSurroundingSpaces} method
     # to remove all surrounding spaces (not recommended).
@@ -96,11 +96,11 @@ module HtmlCompressor
     JAVASCRIPT_COMPRESSORS_OPTIONS = {
       closure: { compilation_level: 'ADVANCED_OPTIMIZATIONS' },
       yui: { munge: true, preserve_semicolons: true, optimize: true, line_break: nil },
-    }
+    }.freeze
 
     CSS_COMPRESSORS_OPTIONS = {
       yui: { line_break: -1 },
-    }
+    }.freeze
 
     DEFAULT_OPTIONS = {
       enabled: true,
@@ -131,7 +131,7 @@ module HtmlCompressor
       remove_surrounding_spaces: nil,
 
       preserve_patterns: nil,
-    }
+    }.freeze
 
     def initialize(options = {})
       @options = DEFAULT_OPTIONS.merge(options)
@@ -139,7 +139,7 @@ module HtmlCompressor
       if @options[:compress_js_templates]
         @options[:remove_quotes] = false
 
-        js_template_types = [ 'text/x-jquery-tmpl' ]
+        js_template_types = ['text/x-jquery-tmpl']
 
         unless @options[:compress_js_templates].is_a? TrueClass
           js_template_types << @options[:compress_js_templates]
@@ -162,7 +162,7 @@ module HtmlCompressor
       begin
         require 'closure-compiler'
         @javascript_compressors[:closure] = Closure::Compiler
-      rescue LoadError
+      rescue LoadError # rubocop:disable Lint/SuppressedException
       end
 
       # Try YUI
@@ -170,24 +170,24 @@ module HtmlCompressor
         require 'yui/compressor'
         @javascript_compressors[:yui] = YUI::JavaScriptCompressor
         @css_compressors[:yui] = YUI::CssCompressor
-      rescue LoadError
+      rescue LoadError # rubocop:disable Lint/SuppressedException
       end
     end
 
     def get_javascript_compressor(compressor_name)
-      return unless @javascript_compressors.has_key? compressor_name
+      return unless @javascript_compressors.key? compressor_name
 
       @javascript_compressors[compressor_name].new JAVASCRIPT_COMPRESSORS_OPTIONS[compressor_name]
     end
 
     def get_css_compressor(compressor_name)
-      return unless @css_compressors.has_key? compressor_name
+      return unless @css_compressors.key? compressor_name
 
       @css_compressors[compressor_name].new CSS_COMPRESSORS_OPTIONS[compressor_name]
     end
 
     def compress(html)
-      if not @options[:enabled] or html.nil? or html.length == 0
+      if !@options[:enabled] || html.nil? || (html.length == 0)
         return html
       end
 
@@ -212,33 +212,28 @@ module HtmlCompressor
       process_preserved_blocks(preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
 
       # put preserved blocks back
-      html = return_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
-
-      html
+      return_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
     end
 
     private
 
-    def preserve_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
+    def preserve_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/ParameterLists
       # preserve user blocks
-      preservePatterns = @options[:preserve_patterns]
-      unless (preservePatterns.nil?)
-        preservePatterns.each_with_index do |preservePattern, i|
-          userBlock = []
-          index = -1
+      @options[:preserve_patterns]&.each_with_index do |preservePattern, i| # rubocop:disable Naming/BlockParameterName
+        userBlock = []
+        index = -1
 
-          html = html.gsub(preservePattern) do |match|
-            if match.strip.length > 0
-              userBlock << match
-              index += 1
-              message_format(TEMP_USER_BLOCK, i, index)
-            else
-              ''
-            end
+        html = html.gsub(preservePattern) do |match|
+          if match.strip.length > 0
+            userBlock << match
+            index += 1
+            message_format(TEMP_USER_BLOCK, i, index)
+          else
+            ''
           end
-
-          userBlocks << userBlock
         end
+
+        userBlocks << userBlock
       end
 
       # preserve <!-- {{{ ---><!-- }}} ---> skip blocks
@@ -318,7 +313,7 @@ module HtmlCompressor
             type = ::Regexp.last_match(2).downcase
           end
 
-          if type.length == 0 or type == 'text/javascript' or type == 'application/javascript'
+          if type.length == 0 || type == 'text/javascript' || type == 'application/javascript'
             # javascript block, preserve and compress with js compressor
             scriptBlocks << group_2
             index += 1
@@ -356,11 +351,12 @@ module HtmlCompressor
       html = html.gsub(TA_PATTERN) do |_match|
         index += 1
 
-        if ::Regexp.last_match(2).strip.length > 0
-          taBlocks << ::Regexp.last_match(2)
-        else
-          taBlocks << ''
-        end
+        taBlocks <<
+          if ::Regexp.last_match(2).strip.length > 0
+            ::Regexp.last_match(2)
+          else
+            ''
+          end
 
         ::Regexp.last_match(1) + message_format(TEMP_TEXT_AREA_BLOCK, index) + ::Regexp.last_match(3)
       end
@@ -378,7 +374,7 @@ module HtmlCompressor
       html
     end
 
-    def return_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
+    def return_blocks(html, preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/ParameterLists
       # put skip blocks back
       html = html.gsub(TEMP_SKIP_PATTERN) do |_match|
         i = ::Regexp.last_match(1).to_i
@@ -460,11 +456,11 @@ module HtmlCompressor
       end
 
       # put user blocks back
-      @options[:preserve_patterns]&.each_with_index do |_preservePattern, p|
+      @options[:preserve_patterns]&.each_with_index do |_preservePattern, p| # rubocop:disable Naming/BlockParameterName
         tempUserPattern = Regexp.new("%%%~COMPRESS~USER#{p}~(\\d+?)~%%%")
         html = html.gsub(tempUserPattern).each do |_match|
           i = ::Regexp.last_match(1).to_i
-          if userBlocks.size > p and userBlocks[p].size > i
+          if userBlocks.size > p && userBlocks[p].size > i
             userBlocks[p][i]
           else
             ''
@@ -475,7 +471,7 @@ module HtmlCompressor
       html
     end
 
-    def process_preserved_blocks(preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks)
+    def process_preserved_blocks(preBlocks, taBlocks, scriptBlocks, styleBlocks, eventBlocks, condCommentBlocks, skipBlocks, lineBreakBlocks, userBlocks) # rubocop:disable Metrics/ParameterLists
       # processPreBlocks(preBlocks)
       # processTextAreaBlocks(taBlocks)
       process_script_blocks(scriptBlocks)
@@ -535,7 +531,7 @@ module HtmlCompressor
       end
 
       result = javascript_compressor.compress(source).strip
-      result = '/*<![CDATA[*/' + result + '/*]]>*/' if cdataWrapper
+      result = "/*<![CDATA[*/#{result}/*]]>*/" if cdataWrapper
       result
     end
 
@@ -560,7 +556,7 @@ module HtmlCompressor
       end
 
       result = css_compressor.compress(source)
-      result = '<![CDATA[' + result + ']]>' if cdataWrapper
+      result = "<![CDATA[#{result}]]>" if cdataWrapper
       result
     end
 
@@ -569,7 +565,7 @@ module HtmlCompressor
       source.sub(EVENT_JS_PROTOCOL_PATTERN, '\1')
     end
 
-    def process_html(html)
+    def process_html(html) # rubocop:disable Metrics/AbcSize
       # remove comments
       html = remove_comments(html)
 
@@ -754,7 +750,7 @@ module HtmlCompressor
           group_2 = ::Regexp.last_match(2)
 
           # keep space if attribute value is unquoted before trailing slash
-          if group_2.start_with?('/') and (TAG_LAST_UNQUOTED_VALUE_PATTERN =~ group_1)
+          if group_2.start_with?('/') && (TAG_LAST_UNQUOTED_VALUE_PATTERN =~ group_1)
             "#{group_1} #{group_2}"
           else
             "#{group_1}#{group_2}"

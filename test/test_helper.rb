@@ -12,9 +12,7 @@ module HtmlCompressor
     end
 
     def read_resource file
-      File.open File.join(resource_path, file), 'r' do |f|
-        return f.readlines.join('')
-      end
+      File.read(File.join(resource_path, file)).chomp
     end
 
   end

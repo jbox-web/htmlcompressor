@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary  = 'htmlcompressor provides a class and a rack middleware to minify html pages'
   s.license  = 'Apache 2.0'
 
-  s.files = Dir['README.md', 'CHANGELOG', 'LICENSE', 'lib/**/*.rb']
+  s.files = Dir['README.md', 'CHANGELOG.md', 'LICENSE', 'lib/**/*.rb']
 
   s.add_development_dependency 'yui-compressor', '~> 0.9'
   s.add_development_dependency 'closure-compiler', '~> 1.1'

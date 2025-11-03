@@ -1,4 +1,8 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in htmlcompressor.gemspec
 gemspec
+
+gem 'closure-compiler'
+gem 'minitest'
+gem 'rake'
+gem 'yui-compressor'

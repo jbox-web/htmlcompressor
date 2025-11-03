@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'lib/htmlcompressor/version'
+require_relative 'lib/html_compressor/version'
 
 Gem::Specification.new do |s|
   s.name     = 'htmlcompressor'

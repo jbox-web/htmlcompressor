@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'htmlcompressor/exceptions'
+require 'html_compressor/exceptions'
 
 module HtmlCompressor
   class Compressor # rubocop:disable Metrics/ClassLength

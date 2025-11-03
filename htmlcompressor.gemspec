@@ -15,4 +15,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 3.2.0'
 
   s.files = Dir['README.md', 'CHANGELOG.md', 'LICENSE', 'lib/**/*.rb']
+
+  s.add_dependency 'rack'
 end

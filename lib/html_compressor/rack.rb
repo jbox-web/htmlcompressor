@@ -34,7 +34,7 @@ module HtmlCompressor
     def call(env)
       status, headers, body = @app.call(env)
 
-      if headers.key?('Content-Type') && headers['Content-Type'] =~ /html/
+      if headers.key?(::Rack::CONTENT_TYPE) && headers[::Rack::CONTENT_TYPE] =~ /html/
         content = ''
 
         body.each do |part|
@@ -42,7 +42,7 @@ module HtmlCompressor
         end
 
         content = @compressor.compress(content)
-        headers['Content-Length'] = content.bytesize.to_s if headers['Content-Length']
+        headers[::Rack::CONTENT_LENGTH] = content.bytesize.to_s if headers[::Rack::CONTENT_LENGTH]
 
         [status, headers, [content]]
       else

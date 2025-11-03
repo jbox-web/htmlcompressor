@@ -48,6 +48,16 @@ Naming/VariableNumber:
 Naming/MethodParameterName:
   Enabled: false
 
+#########
+# RSPEC #
+#########
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not
+
 ##########
 # LAYOUT #
 ##########
@@ -59,9 +69,6 @@ Layout/LineLength:
   Enabled: false
 
 Metrics/MethodLength:
-  Enabled: false
-
-RSpec/ExampleLength:
   Enabled: false
 
 Performance/StringReplacement:

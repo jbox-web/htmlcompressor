@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'html_compressor/version'
-require 'html_compressor/exceptions'
-require 'html_compressor/compressor'
-require 'html_compressor/rack'
+require_relative 'html_compressor/version'
+require_relative 'html_compressor/exceptions'
+require_relative 'html_compressor/compressor'
+require_relative 'html_compressor/rack'
 
 module HtmlCompressor
 end

@@ -1,4 +1,5 @@
-#!/usr/bin/env rake
+# frozen_string_literal: true
+
 begin
   require 'bundler/setup'
 rescue LoadError
@@ -16,5 +17,4 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = false
 end
 
-
-task :default => :test
+task default: :test

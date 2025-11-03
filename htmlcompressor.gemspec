@@ -1,6 +1,6 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
-require File.expand_path('../lib/htmlcompressor/version', __FILE__)
+require_relative 'lib/htmlcompressor/version'
 
 Gem::Specification.new do |s|
   s.name     = 'htmlcompressor'
@@ -11,6 +11,8 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/paolochiodi/htmlcompressor'
   s.summary  = 'htmlcompressor provides a class and a rack middleware to minify html pages'
   s.license  = 'Apache 2.0'
+
+  s.required_ruby_version = '>= 3.2.0'
 
   s.files = Dir['README.md', 'CHANGELOG.md', 'LICENSE', 'lib/**/*.rb']
 end

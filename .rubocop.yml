@@ -1,0 +1,63 @@
+---
+plugins:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.2
+  Exclude:
+    - bin/*
+    - test/**/*
+
+Gemspec/RequireMFA:
+  Enabled: false
+
+#########
+# STYLE #
+#########
+
+Style/Documentation:
+  Enabled: false
+
+Style/ZeroLengthPredicate:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
+##########
+# NAMING #
+##########
+
+Naming/VariableName:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+##########
+# LAYOUT #
+##########
+
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false

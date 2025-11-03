@@ -35,7 +35,7 @@ module HtmlCompressor
       status, headers, body = @app.call(env)
 
       if headers.key?(::Rack::CONTENT_TYPE) && headers[::Rack::CONTENT_TYPE] =~ /html/
-        content = ''
+        content = +''
 
         body.each do |part|
           content << part

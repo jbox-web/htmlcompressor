@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'html_compressor/exceptions'
-
 module HtmlCompressor
   class Compressor # rubocop:disable Metrics/ClassLength
     JS_COMPRESSOR_YUI = 'yui'
